@@ -1,0 +1,12 @@
+INSERT INTO `olap_api`.`notice_of_changes` VALUES 
+(1,'Incorrect bank account number', 'Bank account number incorrect or formatted incorrectly'),
+(2,'Incorrect transit/routing number','Once valid transit/routing number must be changed'),
+(3,'Incorrect transit/routing number and bank account number','Once valid transit/routing number must be changed and causes a change to bank account number structure'),
+(4,'Bank account name change','Customer has changed name or ODFI submitted name incorrectly'),
+(5,'Incorrect payment code','Entry posted to demand account should contain savings payment codes or vice versa'),
+(6,'Incorrect bank account number and transit code', 'Bank account number must be changed and payment code should indicate posting to another account type (demand/savings)'),
+(7,'Incorrect transit/routing number, bank account number and payment code','Changes required in three fields indicated'),
+(9,'Incorrect individual ID number', 'Individual’s ID number is incorrect'),
+(10,'Incorrect company name', 'Company name is no longer valid and should be changed.'),
+(11,'Incorrect company identification', 'Company ID is no longer valid and should be changed'),
+(12,'Incorrect company name and company ID', 'Both the company name and company id are no longer valid and must be changed');

@@ -1,0 +1,58 @@
+@version: 3.3
+@include "scl.conf"
+
+
+options { 
+	time_reap(30);
+	mark_freq(10);
+	keep_hostname(yes);
+
+	# enable or disable directory creation for destination files
+	create_dirs(yes);
+
+	# default owner, group, and permissions for log files (defaults are 0, 0, 0600)
+	owner(root);
+	group(root);
+	perm(0777);
+
+	# default owner, group, and permissions for created directories (defaults are 0, 0, 0700)
+	dir_owner(root);
+	dir_group(root);
+	dir_perm(0777);
+};
+
+source s_collection_rest_requests { 
+	#file("/var/www/collection-vci/app/tmp/logs/debug.log");
+	system();
+	internal();
+};
+
+filter f_collection {
+	level(debug);
+};
+
+destination d_logs {
+	file("/var/log/CollectionRequests-$YEAR$MONTH$DAY/rest.log" 
+	owner("root")
+	group("root")
+	perm(0777)
+	template("$HOUR:$MIN:$SEC [$LEVEL] [$FACILITY] [$PROGRAM] $MSG\n")
+	template_escape(no));
+};
+
+destination d_vci2 {
+	#syslog("209.135.140.192" transport("tcp") port(2010));
+	udp("209.135.140.192" port(514));
+};
+
+log { 
+	source(s_collection_rest_requests); 
+	filter(f_collection);
+	destination(d_logs);
+};
+
+log { 
+	source(s_collection_rest_requests); 
+	filter(f_collection);
+	destination(d_vci2);
+};

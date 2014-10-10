@@ -1,0 +1,142 @@
+Usage Document
+
+Introduction
+This v1.0.0 is target for only merchant usage. 
+
+API is REST based.
+utilizes builtin HTTP features
+JSON responses
+success
+errors
+Live Servers
+Test Servers
+
+Authentication
+
+Vericheck REST API uses BASIC Authentication.
+example curl
+
+Versioning
+
+api.vericheck.com/v1/
+
+Customers
+
+Customer objects allow you to perform create, delete, and update your customers. 
+You can retrieve individual customers as well as a list of all your customers.
+
+/api/customers/v1
+ View all Customers related to the merchant account.
+ Method: GET
+ {
+    "customers": [
+        {
+            "Customer": {
+                "id": "52e62476-7088-4e0e-87f3-15346aac1de6",
+                "merchant_id": "1",
+                "name": "Jan",
+                "email": null,
+                "mobile_phone": "9841374040",
+                "work_phone": null,
+                "default_payment_account": null,
+                "active": "yes",
+                "creation_time": null
+            },
+            "Merchant": {
+                "id": "1",
+                "merchants_data_id": "1",
+                "active": "yes"
+            },
+            "PaymentAccount": [
+                {
+                    "id": "52f2001a-06f8-449c-84ae-f8646aac1de6",
+                    "customer_id": "52e62476-7088-4e0e-87f3-15346aac1de6",
+                    "subtype": "bank_accounts",
+                    "creation_date": "2014-02-05 13:10:49"
+                }
+            ]
+        },
+        {
+            "Customer": {
+                "id": "5318341b-b450-4bf7-979d-4b706aac1de6",
+                "merchant_id": "1",
+                "name": "Feb",
+                "email": null,
+                "mobile_phone": "9841374041",
+                "work_phone": null,
+                "default_payment_account": null,
+                "active": "yes",
+                "creation_time": null
+            },
+            "Merchant": {
+                "id": "1",
+                "merchants_data_id": "1",
+                "active": "yes"
+            },
+            "PaymentAccount": [
+
+            ]
+        }
+    ]
+}
+
+/api/customers/add
+ Add a new customer to the merchant account.
+	
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 
+					"http://localhost/collection-vci/api/customers/add");
+curl_setopt($ch, CURLOPT_POST, TRUE);
+curl_setopt($ch, CURLOPT_USERPWD, $login['username'] . ':' . $login['password']);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStringPOST);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+$resultPOST = curl_exec($ch);
+curl_close($ch);
+
+JSON Response 
+Successful Insert {"id":"5318341b-b450-4bf7-979d-4b706aac1de6"}
+
+/api/customers/{CUSTOMER_ID}
+ Get customer with the id  CUSTOMER_ID.
+ Method : GET
+ {CUSTOMER_ID} : String
+ 
+/api/customers/addPaymentAccount
+ Create customers payment account. The API accepts json object. 
+ Method: POST
+ POST Parameters: 
+  'customer_id' => '52e62476-7088-4e0e-87f3-15346aac1de6',
+  'subtype' => 'bank_accounts',
+  'routing_number' => '655060042',
+  'account_number_last_four_digits' => '1234',
+  'account_type' => 'savings'
+
+
+Transaction
+object definition
+Requests types: POST, GET, etc …
+example object of each request type
+
+Response
+json format 
+todo: json structure
+
+Errors
+examples
+json format
+
+Vericheck uses conventional HTTP response codes to indicate success or failure of an API request. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error that resulted from the provided information (e.g. a required parameter was missing, a charge failed, etc.), and codes in the 5xx range indicate an error with Stripe's servers.
+Not all errors map cleanly onto HTTP response codes, however. When a request is valid but does not complete successfully (e.g. a card is declined), we return a 402 error code.
+Attributes
+> type
+The type of error returned. Can be invalid_request_error, api_error, or card_error.
+message
+A human-readable message giving more details about the error. For card errors, these messages can be shown to your users.
+>codeoptional
+For card errors, a short string from amongst those listed on the right describing the kind of card error that occurred.
+>paramoptional
+The parameter the error relates to if the error is parameter-specific. You can use this to display a message near the correct form field, for example.
+
+Handling errors
+Our API bindings can raise exceptions for many reasons, such as a failed charge, invalid parameters, authentication errors, and network unavailability. We recommend always trying to gracefully handle exceptions from our API.
+
